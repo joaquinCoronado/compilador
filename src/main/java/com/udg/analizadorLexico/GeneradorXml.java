@@ -1,4 +1,4 @@
-package com.udg.analizadorLexico;
+package main.java.com.udg.analizadorLexico;
 
 public class GeneradorXml {
 	private String xml; //codigo

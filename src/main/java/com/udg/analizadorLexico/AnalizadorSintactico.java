@@ -1,4 +1,6 @@
-package com.udg.analizadorLexico;
+package main.java.com.udg.analizadorLexico;
+
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,11 +17,11 @@ public class AnalizadorSintactico {
 	  pares "clave/valor"; de tal manera que para una clave solamente tenemos un valor.
 	  el hashmap simbolos ayuda sobre todo en el analisis a las variables,
 	  el poder comprobar si una variable ya ha sido declarada, o no, o si esta duplicada */
-	Map<String, Simbolo> simbolos=new HashMap<String, Simbolo>();
-	Stack<String> tipos=new Stack<String>(); //Pila que ayuda con la comprobacion de operaciones del mismo tipo
+	Map<String, Simbolo> simbolos=new HashMap<>();
+	Stack<String> tipos=new Stack<>(); //Pila que ayuda con la comprobacion de operaciones del mismo tipo
 	private boolean error; //Determina si encuentra un error en el archivo
 	private int puntero; //Puntero que RECORRE EL ARREGLO de compontentes, no la entrada
-	private String cadena, tipo; 
+	private String cadena, tipo;
 	
 	//constructor
 	public AnalizadorSintactico(ArrayList<Componente> listaComponentes){
@@ -157,44 +159,49 @@ public class AnalizadorSintactico {
 	Nodo nodoVariables(){
 		String id, tipoVariable;
 		Nodo nodo=new Nodo(null, null, new Componente("DEFVAR","DEFVAR"), false);
-		while(!cadena.equals(";")){
-			cadena=getSiguienteCadena(); //Identificador
-			id=cadena;
-			if(getToken().equals("Identificador")){
-				cadena=getSiguienteCadena();
-				if(cadena.equals(",") || cadena.equals(";")){
-					nodo.hijos.add(new Nodo(null, null, new Componente(id,tipo), false));
-					if(tipo.equals("entero")){
-						tipoVariable="E";
+
+		if(cadena != null){
+			while(!cadena.equals(";")){
+				cadena=getSiguienteCadena(); //Identificador
+				id=cadena;
+				if(getToken().equals("Identificador")){
+					cadena=getSiguienteCadena();
+					if(cadena.equals(",") || cadena.equals(";")){
+						nodo.hijos.add(new Nodo(null, null, new Componente(id,tipo), false));
+						if(tipo.equals("entero")){
+							tipoVariable="E";
+						}
+						else{
+							tipoVariable="R";
+						}
+
+						//Si la variable no ha sido declarada se agrega a simbolos:
+						if(simbolos.get(id)==null){
+
+							///AQUI ME QUEDE..
+							simbolos.put(id, new Simbolo(id,tipoVariable));
+						}
+						//De lo contrario mostramos el error
+						else{
+							error=true;
+							System.out.println("->Error: identificador "+simbolos.get(id).nombre+" ya ha sido declarado");
+						}
+						continue;
 					}
 					else{
-						tipoVariable="R";
-					}
-					
-					//Si la variable no ha sido declarada se agrega a simbolos:
-					if(simbolos.get(id)==null){
-						
-						///AQUI ME QUEDE..
-						simbolos.put(id, new Simbolo(id,tipoVariable));
-					}
-					//De lo contrario mostramos el error
-					else{
+						System.out.println("->Error: hace falta , o ; en "+cadena);
 						error=true;
-						System.out.println("->Error: identificador "+simbolos.get(id).nombre+" ya ha sido declarado");
+						break;
 					}
-					continue;
 				}
 				else{
-					System.out.println("->Error: hace falta , o ; en "+cadena);
+					System.out.println("->Error: "+cadena+" no es un identificador");
 					error=true;
-					break;
 				}
 			}
-			else{
-				System.out.println("->Error: "+cadena+" no es un identificador");
-				error=true;
-			}
 		}
+
+
 		if(!error){
 			return nodo;
 		}
@@ -636,17 +643,20 @@ public class AnalizadorSintactico {
 			raiz.agregaNodo(getNodo());
 		}
 		if(!error){
-			GeneradorCodigo generadorCodigo = new GeneradorCodigo(raiz, simbolos);
+			System.out.println("\nAnálizis sintáctico finalizado con éxito!!");
+			/*GeneradorCodigo generadorCodigo = new GeneradorCodigo(raiz, simbolos);
 			try {
 				generadorCodigo.generarCodigo();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 		}
 		else{
 			System.out.println("Se encontraron errores");
 		}
+
+		System.out.println("raiz: " + new Gson().toJson(raiz));
+		//System.out.println("resultado: " + new Gson().toJson(listaComponentes));
 		return error;
 	}
 }

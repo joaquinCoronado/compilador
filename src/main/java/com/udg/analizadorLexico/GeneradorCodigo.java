@@ -1,4 +1,4 @@
-package com.udg.analizadorLexico;
+package main.java.com.udg.analizadorLexico;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,6 +11,8 @@ public class GeneradorCodigo {
 	private Nodo raiz = new Nodo(null, null, new Componente("PROGRAMA" ,"PROGRAMA"),true); //Raiz proveniente del AS, es el punto de partida para recorrer el arbol y generar el codigo
 	private int numEtiqueta, numEtiquetaVerdadero, numEtiquetaFin; //Contadores de etiquetas (evitar que se repitan)
 	private String codigo; //Codigo que se genera y se guardara en el .asm
+
+	private String path = "/Users/joaquincoronadoramirez/IdeaProjects/analizador-lexico/src/main/java/com/udg/analizadorLexico/";
 	
 	//Constructor
 	public GeneradorCodigo(Nodo raiz, Map<String,Simbolo> simbolos){
@@ -210,7 +212,7 @@ public class GeneradorCodigo {
 	public void generarCodigo() throws IOException{
 		codigo=getCodigo();
 		try{
-			PrintWriter escribe=new PrintWriter(new FileWriter("salida.asm"));
+			PrintWriter escribe=new PrintWriter(new FileWriter(path + "salida.asm")); //TODO: add path
 			escribe.print(codigo);
 			escribe.close();
 		}catch(IOException e){
@@ -220,7 +222,7 @@ public class GeneradorCodigo {
 		//Ensamblamos el archivo asm generado, y creamos el ejecutable
 		Process process;
 		Runtime runtime = Runtime.getRuntime();
-		process = runtime.exec("\\masm32\\bin\\ml /c  /coff  /Cp salida.asm");
+		process = runtime.exec("\\masm32\\bin\\ml /c  /coff  /Cp " + path + "salida.asm"); //TODO: add path
 		esperarSegundo(); //Pausa para esperar a que se genere el archivo salida.obj necesario para la siguiente instruccion
 		process = runtime.exec("\\masm32\\bin\\link /SUBSYSTEM:CONSOLE /LIBPATH:.\\lib salida");
 		esperarSegundo();

@@ -1,9 +1,9 @@
-package com.udg.analizadorLexico;
+package main.java.com.udg.analizadorLexico;
 
 import java.util.ArrayList;
 //Clase que representa cada nodo del arbol
 public class Nodo {
-	ArrayList<Nodo>	hijos = new ArrayList<Nodo>();
+	ArrayList<Nodo>	hijos = new ArrayList<>();
 	Nodo izquierda,derecha;
 	Componente componente;
 	boolean esRaiz;
@@ -20,5 +20,12 @@ public class Nodo {
 		if(nodo!=null){
 			hijos.add(nodo);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "Nodo{" +
+				"componente=" + componente +
+				'}';
 	}
 }

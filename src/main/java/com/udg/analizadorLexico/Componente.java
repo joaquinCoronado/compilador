@@ -1,4 +1,4 @@
-package com.udg.analizadorLexico;
+package main.java.com.udg.analizadorLexico;
 
 /*Esta clase representa una cadena, con un token (significado
   o representacion de la cadena).
@@ -10,5 +10,13 @@ public class Componente{
 	public Componente(String cadena, String token){
 		this.cadena=cadena;
 		this.token=token;
+	}
+
+	@Override
+	public String toString() {
+		return "Componente{" +
+				"cadena='" + cadena + '\'' +
+				", token='" + token + '\'' +
+				'}';
 	}
 }

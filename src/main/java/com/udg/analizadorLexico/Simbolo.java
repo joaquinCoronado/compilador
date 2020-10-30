@@ -1,4 +1,4 @@
-package com.udg.analizadorLexico;
+package main.java.com.udg.analizadorLexico;
 
 /**Cada simbolo ayuda en el analizador semantico
  para comprobar operaciones entre variables del
@@ -13,4 +13,11 @@ public class Simbolo {
 		this.tipo=tipo;
 	}
 
+	@Override
+	public String toString() {
+		return "Simbolo{" +
+				"nombre='" + nombre + '\'' +
+				", tipo='" + tipo + '\'' +
+				'}';
+	}
 }
